@@ -60,11 +60,15 @@ def excrat_akebi_zip(zip_path: str, cheat_folder: str):
 
 
 def installer():
-    creating_cheat_folder()
-    print(f'{c.green}Extracting files{c.RESET}')
-    akebi_zip_path = downlaod_akebi()
-    akebi_cheat_folder = creating_cheat_folder()
-    excrat_akebi_zip(akebi_zip_path, akebi_cheat_folder)
+    try:
+        creating_cheat_folder()
+        print(f'{c.green}Extracting files{c.RESET}')
+        akebi_zip_path = downlaod_akebi()
+        akebi_cheat_folder = creating_cheat_folder()
+        excrat_akebi_zip(akebi_zip_path, akebi_cheat_folder)
+        return True
+    except Exception as ex:
+        return ex, False
 
 
 def main():
