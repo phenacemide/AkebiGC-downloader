@@ -26,8 +26,9 @@ def print_menu() -> None:
 
 
 def case_1():
-    installer()
-    return
+    if res := installer():
+        input(f"{c.green}Installing finished successfully. Press enter to exit.{c.RESET}")
+    print(f"{c.red}Something went wrong...\n Error: {res[0]}")
 
 
 def case_2():
@@ -38,7 +39,6 @@ def case_3():
     print(
         f"{c.grey_bg} DEVELOPER #1: menleev#0001 {c.RESET}\n{c.grey_bg}{c.blue} "
         f"DEVELOPER #2: phenacemide#2436 {c.RESET}")
-    return
 
 
 def main() -> str | bool:
