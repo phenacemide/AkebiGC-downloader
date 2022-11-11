@@ -1,5 +1,5 @@
-from .get_paths import copy_to_clipboard, multithreading_search
-from .akebi_cfg import create_akebi
-from .colors import c
-from .downloading_akebi import installer
-
+from . import GetTime_func
+from . import akebi_cfg
+from . import downloading_akebi
+from . import get_paths
+from . import colors
