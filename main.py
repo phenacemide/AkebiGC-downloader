@@ -44,6 +44,8 @@ def installing_akebi():
 
 
 def main():
+    start_menu()
+    time.sleep(2)
     installing_akebi()
     _exit()
 
