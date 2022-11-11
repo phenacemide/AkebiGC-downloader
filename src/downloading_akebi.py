@@ -1,22 +1,29 @@
 import os
 import time
-import requests
-
-from .colors import c
 from json import loads
 from zipfile import ZipFile
+
+import requests
+from tqdm import tqdm
+
 from .GetTime_func import total_time
+from .colors import Colors
 from .get_paths import multithreading_search
 
+c = Colors()
 
-def get_downloading_link() -> str:
+desktop = os.path.abspath(os.environ['USERPROFILE'] + '\\Desktop')
 
+
+def get_downloading_link() -> tuple:
     latest_version = loads(requests.get('https://api.github.com/repos/Taiga74164/Akebi-GC/releases/latest').text)
 
     for item in latest_version['assets']:
         link = item['browser_download_url']
         if 'global' in link.lower().strip():
-            return link
+            size = item['size']
+            name = item['name']
+            return link, size, name
 
 
 def downlaod_akebi() -> str:
@@ -25,16 +32,22 @@ def downlaod_akebi() -> str:
     """
     start = time.time()
 
-    link = get_downloading_link()
-    filename = link.split('/')[-1]
+    link, total_size, filename = get_downloading_link()
+
     if os.path.exists(filename):
-        return os.path.abspath(filename)
+        if not total_size > 40000000:
+            return os.path.abspath(filename)
+        os.remove(filename)
 
     print(f"{c.green}Starting download: {filename}{c.RESET}")
 
-    req = requests.get(link)
+    chunk_size = 1024
+
+    req = requests.get(link, stream=True)
     with open(filename, 'wb') as file:
-        file.write(req.content)
+        for data in tqdm(iterable=req.iter_content(chunk_size=chunk_size), total=int(total_size / chunk_size),
+                         unit='KB'):
+            file.write(data)
 
     print(f"{c.green}{filename} has been download. {filename} was downloaded for {time.time() - start}{c.RESET}")
 
@@ -43,8 +56,8 @@ def downlaod_akebi() -> str:
 
 def creating_cheat_folder() -> str | None:
     path = multithreading_search()
-    os.system('mkdir akebi_cheat')
-    akebi_cheat_folder = os.path.abspath("akebi_cheat")
+    akebi_cheat_folder = os.path.abspath(f'{desktop}\\akebi_cheat')
+    os.system(f'mkdir {akebi_cheat_folder}')
     with open(f"{akebi_cheat_folder}\\cfg.ini", 'w', encoding='UTF-8') as file:
         file.write(f"[Inject]\nGenshinPath = {path}")
     print(f'{c.green}{akebi_cheat_folder}\\cfg.ini was created succesfully{c.RESET}')
@@ -57,15 +70,16 @@ def excrat_akebi_zip(zip_path: str, cheat_folder: str):
     akebi_cheat_folder = cheat_folder
     with ZipFile(akebi_zip_path, 'r') as z:
         z.extractall(akebi_cheat_folder)
+    os.remove(akebi_zip_path)
 
 
-def installer():
+def installer() -> tuple | bool:
     try:
-        creating_cheat_folder()
-        print(f'{c.green}Extracting files{c.RESET}')
-        akebi_zip_path = downlaod_akebi()
         akebi_cheat_folder = creating_cheat_folder()
+        akebi_zip_path = downlaod_akebi()
+        print(f'{c.green}Extracting files{c.RESET}')
         excrat_akebi_zip(akebi_zip_path, akebi_cheat_folder)
+        print(f"{c.green}Installation completed! Have fun ;){c.RESET}")
         return True
     except Exception as ex:
         return ex, False
