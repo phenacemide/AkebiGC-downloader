@@ -32,7 +32,7 @@ def end_menu() -> None:
 
 def _exit():
     for i in range(5, 0, -1):
-        print(f"Closing in {i}...")
+        print(f"{c.red}Closing in {i}...")
         time.sleep(1.3)
 
 
@@ -45,7 +45,7 @@ def installing_akebi():
 
 def main():
     start_menu()
-    time.sleep(2)
+    time.sleep(1.5)
     installing_akebi()
     _exit()
 
