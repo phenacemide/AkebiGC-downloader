@@ -1,5 +1,7 @@
 import os
 import time
+import sys
+
 from json import loads
 from zipfile import ZipFile
 
@@ -16,6 +18,8 @@ desktop = os.path.abspath(os.environ['USERPROFILE'] + '\\Desktop')
 
 
 def get_downloading_link() -> tuple:
+    print(f"{c.green}Getting last cheat version...{c.RESET}")
+
     latest_version = loads(requests.get('https://api.github.com/repos/Taiga74164/Akebi-GC/releases/latest').text)
 
     for item in latest_version['assets']:
@@ -35,11 +39,15 @@ def downlaod_akebi() -> str:
     link, total_size, filename = get_downloading_link()
 
     if os.path.exists(filename):
-        if not total_size > 40000000:
+        if sys.getsizeof(filename) == total_size:
+            print(f"{c.red}{filename} is already exists! {c.green}Unzipping {filename}{c.RESET}")
             return os.path.abspath(filename)
-        os.remove(filename)
+        else:
+            print(f"{c.red}{filename} is already exists but with old version... Deleting {filename}...{c.RESET}")
+            os.remove(filename)
 
-    print(f"{c.green}Starting download: {filename}{c.RESET}")
+    print(f"{c.green}Starting download: {filename}\n"
+          f"Downloading to {desktop}{c.RESET}")
 
     chunk_size = 1024
 
@@ -57,7 +65,9 @@ def downlaod_akebi() -> str:
 def creating_cheat_folder() -> str | None:
     path = multithreading_search()
     akebi_cheat_folder = os.path.abspath(f'{desktop}\\akebi_cheat')
+    print(f"{c.green}Creating akebi folder in {akebi_cheat_folder}")
     os.system(f'mkdir {akebi_cheat_folder}')
+    print(f"Creating cfg.ini file{c.RESET}")
     with open(f"{akebi_cheat_folder}\\cfg.ini", 'w', encoding='UTF-8') as file:
         file.write(f"[Inject]\nGenshinPath = {path}")
     print(f'{c.green}{akebi_cheat_folder}\\cfg.ini was created succesfully{c.RESET}')
