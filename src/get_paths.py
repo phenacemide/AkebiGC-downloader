@@ -21,7 +21,7 @@ def searching_full_genshinpath(disk, filename="GenshinImpact.exe") -> None:
         if genshin_path:
             break
         if filename in files:
-            print(f"{c.green}{filename} was founded in {root}!{c.RESET}")
+            print(f"{c.green}{filename} was found in {root}!{c.RESET}")
             genshin_path = os.path.abspath(f"{root}\\{filename}")
             break
 
