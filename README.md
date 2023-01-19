@@ -1,4 +1,4 @@
-# AkebiGC-downloader
+# AkebiGC-downloader [NOT WORKING]
 
 ## Python script which downloads akebiGC cheat for peopls who cant do that by themselves =)
 
